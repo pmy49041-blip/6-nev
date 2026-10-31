@@ -473,6 +473,7 @@
 
                     <!-- Tables Map Grid -->
                     <div id="tablesGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-4 p-6 bg-cafeDark/90 rounded-2xl border border-cafeBorder min-h-[300px] items-center justify-center"></div>
+                    <p class="text-center text-[11px] text-stone-500">Stol rasmini bosing: katta rasm ochiladi.</p>
                 </div>
 
                 <!-- Reservation Form -->
@@ -788,6 +789,31 @@
                 </div>
             </div>
             <button id="modalAddBtn" class="w-full py-3.5 bg-cafeGold text-cafeDark font-bold rounded-xl text-xs uppercase tracking-wider">Savatga Qo'shish</button>
+        </div>
+    </div>
+
+    <!-- STOL RASMI OYNASI (Google Maps kabi) -->
+    <div id="tableModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-cafe max-w-2xl w-full rounded-3xl border border-cafeBorder p-6 space-y-4 relative animate-fade-in">
+            <button onclick="closeTableModal()" class="absolute top-4 right-4 z-10 w-9 h-9 rounded-full bg-black/60 text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+
+            <!-- Katta rasm va manzil belgisi -->
+            <div class="relative">
+                <img id="tableModalImg" class="w-full h-72 sm:h-96 object-cover rounded-2xl">
+                <div class="absolute bottom-3 left-3 px-3 py-1.5 bg-cafeDark/80 backdrop-blur-md border border-cafeBorder rounded-lg text-[11px] text-white">
+                    <i class="fa-solid fa-location-dot text-cafeGold mr-1"></i> Gourmet Luxe, Amir Temur shoh ko'chasi, 42
+                </div>
+            </div>
+
+            <h3 id="tableModalTitle" class="font-playfair font-bold text-2xl text-white"></h3>
+
+            <div class="flex flex-wrap gap-3">
+                <button id="tableModalSelectBtn" class="flex-1 py-3.5 bg-cafeGold text-cafeDark font-bold rounded-xl text-xs uppercase tracking-wider">Stolni Tanlash</button>
+                <a href="https://www.google.com/maps/search/?api=1&query=Toshkent+Amir+Temur+shoh+kochasi+42" target="_blank"
+                   class="flex-1 py-3.5 bg-cafeCard border border-cafeBorder hover:border-cafeGold text-white font-bold rounded-xl text-xs uppercase tracking-wider text-center">
+                    <i class="fa-solid fa-map-location-dot text-cafeGold mr-1"></i> Google Maps
+                </a>
+            </div>
         </div>
     </div>
 

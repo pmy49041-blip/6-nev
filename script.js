@@ -192,6 +192,19 @@ function checkoutCart() {
 }
 
 // Table Reservation
+
+// Kafe rasmlari (dumaloqlar ichida chiqadi). O'zingizning rasmlaringizni ham qo'yishingiz mumkin.
+const tablePhotos = [
+    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4',
+    'https://images.unsplash.com/photo-1554118811-1e0d58224f24',
+    'https://images.unsplash.com/photo-1559339352-11d035aa65de',
+    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0',
+    'https://images.unsplash.com/photo-1552566626-52f8b828add9'
+];
+
+// Zal nomlari (oynada chiroyli chiqishi uchun)
+const hallNames = { main: 'Asosiy Zal', terrace: 'Yozgi Terrasa', vip: 'VIP Xona', music: 'Live Music' };
+
 function selectHall(hall) {
     document.querySelectorAll('[id^="hall-"]').forEach(btn => {
         btn.classList.remove('bg-cafeGold', 'text-cafeDark', 'border-cafeGold');
@@ -203,15 +216,40 @@ function selectHall(hall) {
     let html = '';
     for(let i=1; i<=12; i++) {
         const isOccupied = i === 3 || i === 7;
+        const photo = tablePhotos[(i - 1) % tablePhotos.length];
+        // Dumaloq ichida rasm, ustida qora parda va stol nomi
         html += `
-            <button type="button" onclick="${isOccupied ? '' : `selectTable('${hall.toUpperCase()}-STOL #${i}', this)`}" 
-                class="table-btn aspect-square flex items-center justify-center border-2 rounded-full font-bold text-xs transition duration-300 ${isOccupied ? 'table-occupied' : 'bg-cafeCard border-cafeBorder text-white hover:border-cafeGold'}">
-                ${hall.toUpperCase()} #${i}
+            <button type="button" id="table-${i}" onclick="${isOccupied ? '' : `openTableModal('${hall}', ${i})`}"
+                class="table-btn relative overflow-hidden aspect-square flex items-center justify-center border-2 rounded-full font-bold text-xs transition duration-300 ${isOccupied ? 'table-occupied' : 'bg-cafeCard border-cafeBorder text-white hover:border-cafeGold'}">
+                <img src="${photo}?auto=format&fit=crop&w=300&q=80" class="absolute inset-0 w-full h-full object-cover ${isOccupied ? 'grayscale opacity-40' : ''}">
+                <span class="absolute inset-0 bg-black/45"></span>
+                <span class="relative ${isOccupied ? 'text-stone-400' : 'text-white'}">${hall.toUpperCase()} #${i}</span>
             </button>
         `;
     }
     container.innerHTML = html;
 }
+
+// Stol rasmi oynasini ochish
+function openTableModal(hall, i) {
+    const photo = tablePhotos[(i - 1) % tablePhotos.length];
+    const tableId = `${hall.toUpperCase()}-STOL #${i}`;
+
+    document.getElementById('tableModalImg').src = photo + '?auto=format&fit=crop&w=1000&q=80';
+    document.getElementById('tableModalTitle').innerText = `${hallNames[hall]}: ${i}-stol`;
+    // "Stolni Tanlash" bosilsa, eski selectTable funksiyasi ishlaydi
+    document.getElementById('tableModalSelectBtn').onclick = () => {
+        selectTable(tableId, document.getElementById('table-' + i));
+        closeTableModal();
+    };
+    document.getElementById('tableModal').classList.remove('hidden');
+}
+function closeTableModal() { document.getElementById('tableModal').classList.add('hidden'); }
+
+// Qora fonni bosganda ham oyna yopiladi
+document.getElementById('tableModal').addEventListener('click', e => {
+    if (e.target.id === 'tableModal') closeTableModal();
+});
 
 function selectTable(tableId, btn) {
     selectedTable = tableId;
@@ -317,6 +355,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
         closeDishModal();
         closeVideoModal();
+        closeTableModal();
         document.getElementById('cartDrawer').classList.add('translate-x-full');
     }
 });
