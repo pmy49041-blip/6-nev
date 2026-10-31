@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="uz" class="h-full dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gourmet Luxe Cafe & Bistro | Premium Dining Experience</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cafeGold: '#d4af37',
+                        cafeGoldLight: '#e6c280',
+                        cafeGoldDark: '#aa820a',
+                        cafeDark: '#0d0d0d',
+                        cafeCard: '#141414',
+                        cafeCardHover: '#1f1f1f',
+                        cafeBorder: '#262626',
+                        cafeAccent: '#e07a5f'
+                    },
+                    fontFamily: {
+                        playfair: ['Playfair Display', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #0d0d0d; }
+        ::-webkit-scrollbar-thumb { background: #d4af37; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #aa820a; }
+
+        body {
+            background-color: #0d0d0d;
+            color: #e5e5e5;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(212, 175, 55, 0.08), transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(224, 122, 95, 0.05), transparent 50%);
+        }
+
+        .glass-cafe {
+            background: rgba(20, 20, 20, 0.85);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .table-selected {
+            background-color: #d4af37 !important;
+            color: #0d0d0d !important;
+            border-color: #ffffff !important;
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.8);
+            transform: scale(1.05);
+        }
+
+        .table-occupied {
+            background-color: #262626 !important;
+            color: #666666 !important;
+            cursor: not-allowed;
+            border-color: #333333 !important;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Sarlavha tagidagi oltin chiziq */
+        .title-line::after { content: ''; display: block; width: 72px; height: 3px; margin: 18px auto 0;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent); }
+
+        /* Yaltirab turadigan oltin matn */
+        .gold-text { background: linear-gradient(90deg, #aa820a, #f3dc9a, #d4af37, #f3dc9a, #aa820a);
+            background-size: 200% auto; -webkit-background-clip: text; background-clip: text;
+            color: transparent; animation: shine 6s linear infinite; }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* Taom kartochkasi ko'tarilib, oltin nur sochadi */
+        .dish-card { transition: transform .3s, box-shadow .3s, border-color .3s; }
+        .dish-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px -15px rgba(212, 175, 55, .4); }
+
+        /* Hero ichidagi suzib yuruvchi oltin nur */
+        .glow-orb { position: absolute; width: 380px; height: 380px; right: -80px; top: -80px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(212, 175, 55, .35), transparent 70%);
+            filter: blur(30px); animation: floaty 8s ease-in-out infinite alternate; }
+        @keyframes floaty { to { transform: translate(-40px, 50px); } }
+
+        /* Savatga qo'shilganda belgi sakraydi */
+        .bump { animation: bump .4s ease; }
+        @keyframes bump { 50% { transform: scale(1.5); } }
+
+        /* Klaviatura bilan yurganda aniq ko'rinadigan ramka */
+        :focus-visible { outline: 2px solid #d4af37; outline-offset: 3px; }
+
+        /* Hero rasmi sekin yaqinlashadi (sayt ochilganda asosiy harakat) */
+        .hero-zoom { animation: slowZoom 20s ease-in-out infinite alternate; }
+        @keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+        /* Harakatni xohlamaydigan foydalanuvchilar uchun o'chiramiz */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { animation: none !important; transition: none !important; }
+        }
+    </style>
+</head>
+<body class="font-sans antialiased min-h-full flex flex-col justify-between selection:bg-cafeGold selection:text-cafeDark">
+
+    <!-- KIRISH EKRANI: sayt ochilganda logotip chiqib, so'ng yo'qoladi -->
+    <div id="splash" class="fixed inset-0 z-[100] bg-cafeDark flex flex-col items-center justify-center gap-5 transition-opacity duration-700">
+        <div class="w-24 h-24 rounded-full bg-cafeGold text-cafeDark flex items-center justify-center text-5xl font-playfair font-bold shadow-2xl shadow-cafeGold/40 animate-pulse">G</div>
+        <span class="gold-text font-playfair font-bold text-3xl tracking-widest">GOURMET LUXE</span>
+    </div>
+
+    <!-- Sahifa qancha o'qilganini ko'rsatuvchi oltin chiziq -->
+    <div id="scrollBar" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-cafeGoldDark to-cafeGoldLight z-[60]" style="width: 0%"></div>
+
+    <!-- Sichqoncha ortidan yuruvchi yumshoq oltin nur (kompyuterda) -->
+    <div id="cursorGlow" class="hidden md:block fixed top-0 left-0 w-72 h-72 -ml-36 -mt-36 rounded-full pointer-events-none z-30" style="background: radial-gradient(circle, rgba(212,175,55,.09), transparent 70%)"></div>
+
+    <!-- TOAST NOTIFICATIONS -->
+    <div id="toastContainer" class="fixed top-24 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- PROMO HEADER BAR -->
+    <div class="bg-gradient-to-r from-cafeGoldDark via-cafeGold to-cafeGoldDark text-cafeDark px-4 py-1.5 text-xs font-bold uppercase tracking-widest flex justify-between items-center z-50">
+        <div class="flex items-center gap-2">
+            <i class="fa-solid fa-crown"></i>
+            <span>Promo-kod: <span class="underline font-black">CAFE20</span> (20% CHEGIRMA)</span>
+        </div>
+        <div class="hidden md:flex items-center gap-6">
+            <span><i class="fa-solid fa-truck-fast mr-1"></i> O'zbekiston Bo'ylab Yuborish</span>
+            <span><i class="fa-solid fa-clock mr-1"></i> Har kuni 08:00 - 23:00</span>
+            <span><i class="fa-solid fa-phone mr-1"></i> +998 (71) 200-00-00</span>
+        </div>
+    </div>
+
+    <!-- MAIN HEADER / NAVBAR -->
+    <header class="sticky top-0 z-40 bg-cafeDark/95 backdrop-blur-xl border-b border-cafeBorder">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Logo -->
+                <a href="javascript:void(0)" onclick="navigateTo('home')" class="flex items-center gap-3 group">
+                    <div class="w-12 h-12 rounded-full bg-cafeGold text-cafeDark flex items-center justify-center text-2xl font-playfair font-bold shadow-lg shadow-cafeGold/20 group-hover:scale-105 transition duration-300">
+                        G
+                    </div>
+                    <div>
+                        <span class="font-playfair font-bold text-xl sm:text-2xl tracking-wider text-white group-hover:text-cafeGold transition block">GOURMET <span class="text-cafeGold">LUXE</span></span>
+                        <span class="text-[9px] font-sans tracking-[0.3em] uppercase text-stone-400 block font-semibold">CAFE & BISTRO</span>
+                    </div>
+                </a>
+
+                <!-- Nav Links -->
+                <nav class="hidden lg:flex items-center space-x-1 text-xs font-bold uppercase tracking-wider">
+                    <button onclick="navigateTo('home')" id="nav-home" class="nav-tab px-4 py-2.5 rounded-xl text-cafeGold bg-cafeCard border border-cafeGold/40 transition">1. Bosh Sahifa</button>
+                    <button onclick="navigateTo('menu')" id="nav-menu" class="nav-tab px-4 py-2.5 rounded-xl text-stone-400 hover:text-white transition">2. Menyu</button>
+                    <button onclick="navigateTo('reservation')" id="nav-reservation" class="nav-tab px-4 py-2.5 rounded-xl text-stone-400 hover:text-white transition">3. Stol Bron Qilish</button>
+                    <button onclick="navigateTo('builder')" id="nav-builder" class="nav-tab px-4 py-2.5 rounded-xl text-stone-400 hover:text-white transition">4. Buyurtma & Xarita</button>
+                </nav>
+
+                <!-- Action Controls -->
+                <div class="flex items-center gap-3">
+                    <button onclick="navigateTo('reservation')" class="hidden sm:flex items-center gap-2 px-5 py-2.5 bg-cafeGold hover:bg-cafeGoldDark text-cafeDark font-extrabold text-xs uppercase tracking-wider rounded-xl transition shadow-lg shadow-cafeGold/10">
+                        <i class="fa-solid fa-chair"></i> Stol Band Qilish
+                    </button>
+
+                    <button onclick="toggleCartDrawer()" class="relative p-3 bg-cafeCard hover:bg-cafeCardHover rounded-xl border border-cafeBorder text-stone-300 hover:text-cafeGold transition">
+                        <i class="fa-solid fa-bag-shopping text-lg"></i>
+                        <span id="cartBadgeCount" class="absolute -top-1.5 -right-1.5 bg-cafeAccent text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-cafeDark">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Nav Sub-bar -->
+            <div class="lg:hidden flex items-center justify-between py-2 border-t border-cafeBorder/50 overflow-x-auto gap-2 text-[11px] font-bold uppercase">
+                <button onclick="navigateTo('home')" class="px-3 py-1.5 rounded-lg bg-cafeCard text-cafeGold border border-cafeGold/30 whitespace-nowrap">Bosh Sahifa</button>
+                <button onclick="navigateTo('menu')" class="px-3 py-1.5 rounded-lg bg-cafeCard text-stone-300 border border-cafeBorder whitespace-nowrap">Menyu</button>
+                <button onclick="navigateTo('reservation')" class="px-3 py-1.5 rounded-lg bg-cafeCard text-stone-300 border border-cafeBorder whitespace-nowrap">Bron Qilish</button>
+                <button onclick="navigateTo('builder')" class="px-3 py-1.5 rounded-lg bg-cafeCard text-stone-300 border border-cafeBorder whitespace-nowrap">Buyurtma & Xarita</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN PAGE CONTENT -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-24">
+
+        <!-- ================= SECTION 1: BOSH SAHIFA ================= -->
+        <section id="page-home" class="page-content space-y-20 animate-fade-in">
+            <!-- Hero Carousel -->
+            <div class="relative rounded-3xl overflow-hidden glass-cafe border border-cafeGold/30 shadow-2xl min-h-[550px] flex items-center p-8 sm:p-14">
+                <div class="hero-zoom absolute inset-0 bg-cover bg-center opacity-30 transition-all duration-700" id="heroBgImage" style="background-image: url('https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&w=1200&q=80');"></div>
+                <div class="absolute inset-0 bg-gradient-to-r from-cafeDark via-cafeDark/90 to-transparent"></div>
+                
+                <div class="glow-orb"></div>
+
+                <!-- Bugungi tavsiya kartochkasi -->
+                <div class="hidden lg:block absolute right-10 top-10 z-10 w-64 glass-cafe rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center gap-2 text-xs text-emerald-400 font-bold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Hozir ochiq
+                    </div>
+                    <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80" class="w-full h-32 object-cover rounded-xl" alt="Steyk">
+                    <div>
+                        <p class="text-[11px] text-stone-400">Bugungi tavsiya</p>
+                        <p class="font-playfair font-bold text-white">Steyk Ribaye Luxe</p>
+                        <p class="text-cafeGold font-bold text-sm">185 000 UZS</p>
+                    </div>
+                </div>
+
+                <div class="relative z-10 max-w-2xl space-y-6">
+                    <span class="px-4 py-1.5 bg-cafeGold/20 border border-cafeGold text-cafeGold rounded-full text-xs font-mono font-bold uppercase tracking-widest inline-flex items-center gap-2">
+                        <i class="fa-solid fa-star"></i> High-End Culinary Art
+                    </span>
+                    <h1 class="gold-text text-4xl sm:text-7xl font-playfair font-bold leading-tight" id="heroTitle">Ta'mdan tashqari bir tajriba</h1>
+                    <p class="text-stone-300 text-sm sm:text-base leading-relaxed" id="heroDesc">Kofe donalarining mualliflik qovurilishi, dunyo standartidagi fransuz va Yevropa taomlari hamda oliy darajadagi shinam xizmat ko'rsatish.</p>
+                    <div class="flex flex-wrap gap-4 pt-4">
+                        <button onclick="navigateTo('menu')" class="px-8 py-4 bg-cafeGold hover:bg-cafeGoldDark text-cafeDark font-extrabold rounded-xl text-xs uppercase tracking-wider transition shadow-xl shadow-cafeGold/20 flex items-center gap-3">
+                            <i class="fa-solid fa-utensils"></i> Eksklyuziv Menyu
+                        </button>
+                        <button onclick="openVideoModal()" class="px-8 py-4 bg-cafeCard border border-cafeBorder hover:border-cafeGold text-white font-bold rounded-xl text-xs uppercase tracking-wider transition flex items-center gap-3">
+                            <i class="fa-solid fa-play text-cafeGold"></i> Atmosferani Ko'rish
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Slayd nuqtalari -->
+                <div id="heroDots" class="absolute bottom-10 left-8 sm:left-14 z-20 flex gap-2"></div>
+
+                <!-- Carousel Controls -->
+                <div class="absolute bottom-8 right-8 z-20 flex gap-3">
+                    <button onclick="prevSlide()" class="w-12 h-12 rounded-xl bg-cafeDark/80 border border-cafeBorder text-white flex items-center justify-center hover:border-cafeGold hover:text-cafeGold transition"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button onclick="nextSlide()" class="w-12 h-12 rounded-xl bg-cafeDark/80 border border-cafeBorder text-white flex items-center justify-center hover:border-cafeGold hover:text-cafeGold transition"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <!-- "Olov va ishtiyoq bilan yaratilgan" Showcase -->
+            <div class="space-y-12">
+                <div class="text-center max-w-3xl mx-auto space-y-4">
+                    <span class="text-xs font-bold text-cafeGold uppercase tracking-widest"><i class="fa-solid fa-fire mr-1"></i> Filosofiya va Mahorat</span>
+                    <h2 class="title-line text-3xl sm:text-5xl font-playfair font-bold text-white">Olov va ishtiyoq bilan yaratilgan</h2>
+                    <p class="text-stone-400 text-xs sm:text-sm leading-relaxed">Biz taom tayyorlashni shunchaki jarayon emas, balki haqiqiy san'at deb bilamiz. Barcha mahsulotlar har kuni ertalab eng saralari saralanib keltiriladi.</p>
+                </div>
+
+                <!-- Live Counters -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="glass-cafe p-6 rounded-2xl border border-cafeBorder text-center space-y-2">
+                        <span class="text-3xl sm:text-4xl font-playfair font-bold text-cafeGold block counter" data-to="15" data-suffix="+">0+</span>
+                        <span class="text-xs uppercase font-bold text-stone-400 tracking-wider">Yillik Tajriba</span>
+                    </div>
+                    <div class="glass-cafe p-6 rounded-2xl border border-cafeBorder text-center space-y-2">
+                        <span class="text-3xl sm:text-4xl font-playfair font-bold text-cafeGold block counter" data-to="50" data-suffix="+">0+</span>
+                        <span class="text-xs uppercase font-bold text-stone-400 tracking-wider">Professional Oshpazlar</span>
+                    </div>
+                    <div class="glass-cafe p-6 rounded-2xl border border-cafeBorder text-center space-y-2">
+                        <span class="text-3xl sm:text-4xl font-playfair font-bold text-cafeGold block counter" data-to="100" data-suffix="+">0+</span>
+                        <span class="text-xs uppercase font-bold text-stone-400 tracking-wider">Mualliflik Retseptlari</span>
+                    </div>
+                    <div class="glass-cafe p-6 rounded-2xl border border-cafeBorder text-center space-y-2">
+                        <span class="text-3xl sm:text-4xl font-playfair font-bold text-cafeGold block counter" data-to="12" data-suffix="K+">0K+</span>
+                        <span class="text-xs uppercase font-bold text-stone-400 tracking-wider">Mamnun Mijozlar</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chefs Spotlight Grid -->
+            <div class="space-y-8">
+                <div class="flex justify-between items-end border-b border-cafeBorder pb-4">
+                    <div>
+                        <span class="text-xs font-bold text-cafeGold uppercase tracking-widest">Master Chefs</span>
+                        <h3 class="text-2xl font-playfair font-bold text-white">Bizning Mashhur Ustalari</h3>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder overflow-hidden group hover:border-cafeGold/60 transition">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-cafeDark via-transparent to-transparent"></div>
+                        </div>
+                        <div class="p-6 space-y-2">
+                            <h4 class="font-playfair font-bold text-lg text-white">Jean-Luc Dupont</h4>
+                            <p class="text-xs text-cafeGold font-semibold">Bosh Oshpaz (Mishel Yulduzi)</p>
+                            <p class="text-stone-400 text-xs">Fransuz gastronomiyasi boyicha 18 yillik tajribaga ega xalqaro darajadagi usta.</p>
+                        </div>
+                    </div>
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder overflow-hidden group hover:border-cafeGold/60 transition">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1583394838336-acd977736f90?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-cafeDark via-transparent to-transparent"></div>
+                        </div>
+                        <div class="p-6 space-y-2">
+                            <h4 class="font-playfair font-bold text-lg text-white">Elena Rostova</h4>
+                            <p class="text-xs text-cafeGold font-semibold">Bosh Konditer</p>
+                            <p class="text-stone-400 text-xs">Mualliflik desertlari va Italiya pishiriqlari bo'yicha chempionat g'olibi.</p>
+                        </div>
+                    </div>
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder overflow-hidden group hover:border-cafeGold/60 transition">
+                        <div class="h-64 overflow-hidden relative">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                            <div class="absolute inset-0 bg-gradient-to-t from-cafeDark via-transparent to-transparent"></div>
+                        </div>
+                        <div class="p-6 space-y-2">
+                            <h4 class="font-playfair font-bold text-lg text-white">Jasur Rahimov</h4>
+                            <p class="text-xs text-cafeGold font-semibold">Chempion Barista</p>
+                            <p class="text-stone-400 text-xs">Specialty kofe donalari bilan ishlash bo'yicha brend-barista va ekspert.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Taom tanlovchi va vaqt sanagich -->
+            <div class="glass-cafe rounded-3xl border border-cafeGold/30 p-8 sm:p-10 grid md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-3">
+                    <h3 class="text-2xl sm:text-3xl font-playfair font-bold text-white">Nima yeyishni bilmayapsizmi?</h3>
+                    <p class="text-stone-400 text-sm">Tugmani bosing, menyudan sizga bitta taom tanlab beramiz.</p>
+                    <button onclick="randomDish()" class="px-6 py-3 bg-cafeGold hover:bg-cafeGoldDark text-cafeDark font-extrabold rounded-xl text-xs uppercase tracking-wider transition">
+                        <i class="fa-solid fa-dice mr-2"></i> Menga taom tanla
+                    </button>
+                </div>
+                <div class="text-center md:text-right space-y-2">
+                    <p class="text-stone-400 text-xs">CAFE20 promokodi bugun yarim kechagacha amal qiladi</p>
+                    <p id="countdown" class="font-playfair text-4xl sm:text-6xl font-bold text-cafeGold">00:00:00</p>
+                </div>
+            </div>
+
+            <!-- Galereya -->
+            <div class="space-y-8">
+                <h3 class="text-2xl font-playfair font-bold text-white border-b border-cafeBorder pb-4">Bizning lahzalar</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 auto-rows-[150px] md:auto-rows-[170px] gap-4">
+                    <div class="relative overflow-hidden rounded-2xl group col-span-2 row-span-2">
+                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80" alt="Restoran ichki ko'rinishi" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl group ">
+                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?auto=format&fit=crop&w=800&q=80" alt="Kruassan" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl group ">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80" alt="Steyk" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl group ">
+                        <img src="https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?auto=format&fit=crop&w=800&q=80" alt="Tiramisu" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl group ">
+                        <img src="https://images.unsplash.com/photo-1510591509098-f4fdc6d0ff04?auto=format&fit=crop&w=800&q=80" alt="Espresso" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl group col-span-2">
+                        <img src="https://images.unsplash.com/photo-1467003909585-2f8a72700288?auto=format&fit=crop&w=800&q=80" alt="Losos grill" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                    <div class="relative overflow-hidden rounded-2xl group col-span-2">
+                        <img src="https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&w=800&q=80" alt="Kapuchino" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                        <div class="absolute inset-0 bg-gradient-to-t from-cafeDark/70 via-transparent to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mehmonlar fikri -->
+            <div class="space-y-8">
+                <h3 class="text-2xl font-playfair font-bold text-white border-b border-cafeBorder pb-4">Mehmonlarimiz nima deydi</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder p-6 space-y-4">
+                        <div class="text-cafeGold text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="text-stone-300 text-sm leading-relaxed">Kruassan juda yangi, kofe esa aynan menga yoqadigan quyuqlikda. Ertalab shu yerga kelish odatga aylandi.</p>
+                        <p class="text-xs font-bold text-white">Dilnoza Karimova<span class="block text-stone-500 font-normal">Toshkent</span></p>
+                    </div>
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder p-6 space-y-4">
+                        <div class="text-cafeGold text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="text-stone-300 text-sm leading-relaxed">Oilaviy kechki ovqat uchun VIP xonani band qildik. Xizmat tez, stol oldindan tayyor edi.</p>
+                        <p class="text-xs font-bold text-white">Sherzod Aliyev<span class="block text-stone-500 font-normal">Samarqand</span></p>
+                    </div>
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder p-6 space-y-4">
+                        <div class="text-cafeGold text-sm"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+                        <p class="text-stone-300 text-sm leading-relaxed">Buyurtmani saytdan berdim, 35 minutda issiq holda yetib keldi. Tiramisu esa alohida gap.</p>
+                        <p class="text-xs font-bold text-white">Madina Yusupova<span class="block text-stone-500 font-normal">Toshkent</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Atmosphere Video Modal Trigger Box -->
+            <div class="relative rounded-3xl overflow-hidden glass-cafe border border-cafeBorder p-8 sm:p-12 text-center space-y-6">
+                <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center opacity-20"></div>
+                <div class="relative z-10 max-w-xl mx-auto space-y-4">
+                    <button onclick="openVideoModal()" class="w-20 h-20 rounded-full bg-cafeGold text-cafeDark text-2xl flex items-center justify-center mx-auto hover:scale-110 transition shadow-2xl shadow-cafeGold/50">
+                        <i class="fa-solid fa-play ml-1"></i>
+                    </button>
+                    <h3 class="text-2xl font-playfair font-bold text-white">Restoran Muhiti va Jonli Musiqa Oqshomlari</h3>
+                    <p class="text-stone-400 text-xs">Bizda har juma va shanba kunlari jazz hamda pianino ijrosida jonli musiqa sadolari yangraydi.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 2: EKSKLYUZIV MENYU ================= -->
+        <section id="page-menu" class="page-content hidden space-y-12 animate-fade-in">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <span class="text-xs font-bold text-cafeGold uppercase tracking-widest"><i class="fa-solid fa-book-open mr-1"></i> Tanlangan Menyular</span>
+                <h2 class="title-line text-3xl sm:text-5xl font-playfair font-bold text-white">Eksklyuziv Taomlar va Kofe Menyu</h2>
+                <p class="text-stone-400 text-xs sm:text-sm">Barcha taomlar yangi va organik masalliqlardan tayyorlanadi.</p>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="space-y-6">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <!-- Category Tabs -->
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2 w-full md:w-auto" id="categoryTabs">
+                        <button onclick="filterMenu('all')" class="cat-btn px-5 py-2.5 rounded-xl bg-cafeGold text-cafeDark font-bold text-xs uppercase tracking-wider transition whitespace-nowrap" data-cat="all">Hamma Taomlar</button>
+                        <button onclick="filterMenu('coffee')" class="cat-btn px-5 py-2.5 rounded-xl bg-cafeCard border border-cafeBorder text-stone-300 font-bold text-xs uppercase tracking-wider hover:border-cafeGold transition whitespace-nowrap" data-cat="coffee">Kofe & Salqin</button>
+                        <button onclick="filterMenu('breakfast')" class="cat-btn px-5 py-2.5 rounded-xl bg-cafeCard border border-cafeBorder text-stone-300 font-bold text-xs uppercase tracking-wider hover:border-cafeGold transition whitespace-nowrap" data-cat="breakfast">Nonushta</button>
+                        <button onclick="filterMenu('mains')" class="cat-btn px-5 py-2.5 rounded-xl bg-cafeCard border border-cafeBorder text-stone-300 font-bold text-xs uppercase tracking-wider hover:border-cafeGold transition whitespace-nowrap" data-cat="mains">Asosiy Taomlar</button>
+                        <button onclick="filterMenu('desserts')" class="cat-btn px-5 py-2.5 rounded-xl bg-cafeCard border border-cafeBorder text-stone-300 font-bold text-xs uppercase tracking-wider hover:border-cafeGold transition whitespace-nowrap" data-cat="desserts">Mualliflik Desertlari</button>
+                    </div>
+
+                    <!-- Tartiblash -->
+                    <select id="sortSelect" onchange="sortMenu(this.value)" class="w-full md:w-48 bg-cafeCard border border-cafeBorder rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-cafeGold">
+                        <option value="default">Tartib: odatiy</option>
+                        <option value="cheap">Avval arzonlari</option>
+                        <option value="expensive">Avval qimmatlari</option>
+                    </select>
+
+                    <!-- Search Bar -->
+                    <div class="relative w-full md:w-72">
+                        <input type="text" id="menuSearchInput" oninput="handleMenuSearch(this.value)" placeholder="Taom yoki kofeni qidirish..." class="w-full bg-cafeCard border border-cafeBorder rounded-xl py-2.5 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-cafeGold transition">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-stone-500 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Cards Grid -->
+            <div id="fullMenuGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+        </section>
+
+        <!-- ================= SECTION 3: STOL BRON QILISH ================= -->
+        <section id="page-reservation" class="page-content hidden space-y-16 animate-fade-in">
+            <div class="text-center max-w-3xl mx-auto space-y-4">
+                <span class="text-xs font-bold text-cafeGold uppercase tracking-widest"><i class="fa-solid fa-calendar-check mr-1"></i> Shinamlik Va Qulaylik</span>
+                <h2 class="title-line text-3xl sm:text-5xl font-playfair font-bold text-white">Zalida bir stol sizni kutmoqda</h2>
+                <p class="text-stone-400 text-xs sm:text-sm">Kerakli zal va stolni interaktiv sxemadan tanlab, lahzalar ichida band qiling.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Hall Selector & Interactive Floor Map -->
+                <div class="lg:col-span-7 glass-cafe p-6 sm:p-8 rounded-3xl border border-cafeBorder space-y-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-cafeBorder pb-4">
+                        <h3 class="font-playfair font-bold text-xl text-white flex items-center gap-2">
+                            <i class="fa-solid fa-map-location text-cafeGold"></i> Zallar Sxemasi
+                        </h3>
+                        <div class="flex gap-2">
+                            <span class="flex items-center gap-1.5 text-[11px] text-stone-400"><span class="w-3 h-3 rounded-full bg-cafeCard border border-cafeBorder"></span> Bo'sh</span>
+                            <span class="flex items-center gap-1.5 text-[11px] text-stone-400"><span class="w-3 h-3 rounded-full bg-cafeGold"></span> Tanlangan</span>
+                            <span class="flex items-center gap-1.5 text-[11px] text-stone-400"><span class="w-3 h-3 rounded-full bg-stone-800"></span> Band</span>
+                        </div>
+                    </div>
+
+                    <!-- Hall Buttons -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                        <button onclick="selectHall('main')" id="hall-main" class="p-3 bg-cafeGold text-cafeDark font-bold text-xs rounded-xl transition border border-cafeGold">Asosiy Zal</button>
+                        <button onclick="selectHall('terrace')" id="hall-terrace" class="p-3 bg-cafeCard text-stone-300 font-bold text-xs rounded-xl border border-cafeBorder hover:border-cafeGold transition">Yozgi Terrasa</button>
+                        <button onclick="selectHall('vip')" id="hall-vip" class="p-3 bg-cafeCard text-stone-300 font-bold text-xs rounded-xl border border-cafeBorder hover:border-cafeGold transition">VIP Xona</button>
+                        <button onclick="selectHall('music')" id="hall-music" class="p-3 bg-cafeCard text-stone-300 font-bold text-xs rounded-xl border border-cafeBorder hover:border-cafeGold transition">Live Music</button>
+                    </div>
+
+                    <!-- Tables Map Grid -->
+                    <div id="tablesGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-4 p-6 bg-cafeDark/90 rounded-2xl border border-cafeBorder min-h-[300px] items-center justify-center"></div>
+                </div>
+
+                <!-- Reservation Form -->
+                <div class="lg:col-span-5 glass-cafe p-6 sm:p-8 rounded-3xl border border-cafeBorder space-y-5">
+                    <h3 class="font-playfair font-bold text-xl text-white">Bron Tafsilotlari</h3>
+                    <form onsubmit="handleReservationSubmit(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-400 mb-1">To'liq Ismingiz</label>
+                            <input type="text" id="resName" required placeholder="Masalan: Jasur Aliyev" class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-xs text-white focus:border-cafeGold focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-400 mb-1">Telefon Raqamingiz</label>
+                            <input type="tel" id="resPhone" required placeholder="+998 90 123 45 67" class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-xs text-white focus:border-cafeGold focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-stone-400 mb-1">Sana</label>
+                                <input type="date" id="resDate" required class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-xs text-white focus:border-cafeGold focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-stone-400 mb-1">Vaqt</label>
+                                <input type="time" id="resTime" required class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-xs text-white focus:border-cafeGold focus:outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-400 mb-1">Tanlangan Stol va Zal</label>
+                            <input type="text" id="selectedTableDisplay" readonly value="Stol tanlanmagan" class="w-full bg-cafeDark border border-cafeBorder rounded-xl p-3 text-xs text-cafeGold font-bold focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-stone-400 mb-1">Maxsus Istaklar</label>
+                            <textarea id="resNotes" rows="2" placeholder="Masalan: Oyna oldida bo'lsin, tug'ilgan kun bezatilishi..." class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-xs text-white focus:border-cafeGold focus:outline-none"></textarea>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-cafeGold hover:bg-cafeGoldDark text-cafeDark font-extrabold text-xs uppercase tracking-wider rounded-xl transition shadow-xl shadow-cafeGold/20">
+                            Tasdiqlash va Stolni Band Qilish
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ Section ("Zulmatdan sado") -->
+            <div class="space-y-8 pt-8 border-t border-cafeBorder">
+                <div class="text-center space-y-2">
+                    <span class="text-xs font-bold text-cafeGold uppercase tracking-widest"><i class="fa-solid fa-circle-question mr-1"></i> Ko'p Beriladigan Savollar</span>
+                    <h3 class="text-3xl font-playfair font-bold text-white">Zulmatdan sado</h3>
+                </div>
+
+                <div class="max-w-3xl mx-auto space-y-4" id="faqAccordion">
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder overflow-hidden">
+                        <button onclick="toggleFaq(1)" class="w-full p-5 text-left font-bold text-sm text-white flex justify-between items-center">
+                            Stol bron qilish uchun oldindan to'lov qilish shartmi?
+                            <i class="fa-solid fa-chevron-down text-cafeGold transition-transform duration-300" id="faq-icon-1"></i>
+                        </button>
+                        <div id="faq-ans-1" class="hidden p-5 pt-0 text-xs text-stone-400 border-t border-cafeBorder/40 leading-relaxed">
+                            Yo'q, oddiy stol bron qilish mutlaqo bepul. Faqat VIP xonalar hamda maxsus bayramona bezatishlar uchun oldindan kelishilgan holda depozit olinishi mumkin.
+                        </div>
+                    </div>
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder overflow-hidden">
+                        <button onclick="toggleFaq(2)" class="w-full p-5 text-left font-bold text-sm text-white flex justify-between items-center">
+                            Restoranda dress-code mavjudmi?
+                            <i class="fa-solid fa-chevron-down text-cafeGold transition-transform duration-300" id="faq-icon-2"></i>
+                        </button>
+                        <div id="faq-ans-2" class="hidden p-5 pt-0 text-xs text-stone-400 border-t border-cafeBorder/40 leading-relaxed">
+                            Biz Smart Casual uslubini qo'llab-quvvatlaymiz. Sport kiyimida kelish tavsiya etilmaydi.
+                        </div>
+                    </div>
+                    <div class="glass-cafe rounded-2xl border border-cafeBorder overflow-hidden">
+                        <button onclick="toggleFaq(3)" class="w-full p-5 text-left font-bold text-sm text-white flex justify-between items-center">
+                            Delivery xizmati O'zbekistonning barcha hududlariga ishlaydimi?
+                            <i class="fa-solid fa-chevron-down text-cafeGold transition-transform duration-300" id="faq-icon-3"></i>
+                        </button>
+                        <div id="faq-ans-3" class="hidden p-5 pt-0 text-xs text-stone-400 border-t border-cafeBorder/40 leading-relaxed">
+                            Ha, Toshkent shahri bo'yicha 30-45 minutda, viloyat markazlariga esa ekspress yetkazib berish xizmatimiz mavjud.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= SECTION 4: KONSTRUKTOR, XARITA & SAVAT ================= -->
+        <section id="page-builder" class="page-content hidden space-y-20 animate-fade-in">
+            <!-- Custom Builders -->
+            <div class="space-y-12">
+                <div class="text-center max-w-3xl mx-auto space-y-4">
+                    <span class="text-xs font-bold text-cafeGold uppercase tracking-widest"><i class="fa-solid fa-sliders mr-1"></i> Barista & Chef Lab</span>
+                    <h2 class="title-line text-3xl sm:text-5xl font-playfair font-bold text-white">O'z Taomingiz va Kofengizni Yaratib Ko'ring</h2>
+                    <p class="text-stone-400 text-xs sm:text-sm">Ingrediyentlarni tanlang, narx hamda kaloriyani real-vaqt rejimida hisoblang.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Custom Coffee Builder -->
+                    <div class="glass-cafe p-6 sm:p-8 rounded-3xl border border-cafeBorder space-y-6">
+                        <h3 class="font-playfair font-bold text-xl text-white flex items-center gap-2">
+                            <i class="fa-solid fa-mug-hot text-cafeGold"></i> Barista Kofe Konstruktori
+                        </h3>
+                        <div class="space-y-4 text-xs">
+                            <div>
+                                <label class="block font-bold text-stone-400 mb-1">Kofe Asosi:</label>
+                                <select id="coffeeBase" onchange="calcCoffeePrice()" class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-white focus:border-cafeGold focus:outline-none">
+                                    <option value="20000" data-cal="10">Single Espresso (+20 000 UZS) [10 kcal]</option>
+                                    <option value="28000" data-cal="20" selected>Double Espresso (+28 000 UZS) [20 kcal]</option>
+                                    <option value="25000" data-cal="15">Cold Brew Base (+25 000 UZS) [15 kcal]</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-400 mb-1">Sut Turi:</label>
+                                <select id="milkType" onchange="calcCoffeePrice()" class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-white focus:border-cafeGold focus:outline-none">
+                                    <option value="0" data-cal="120">Oddiy Sut (+0 UZS) [120 kcal]</option>
+                                    <option value="8000" data-cal="60">Bodom Suti (+8 000 UZS) [60 kcal]</option>
+                                    <option value="10000" data-cal="80">Soya Suti (+10 000 UZS) [80 kcal]</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-400 mb-1">Sirop va Toppinglar:</label>
+                                <div class="grid grid-cols-2 gap-2 pt-1">
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="5000" data-cal="40" class="coffee-top" onchange="calcCoffeePrice()"> Vanil Sirop (+5k)</label>
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="5000" data-cal="50" class="coffee-top" onchange="calcCoffeePrice()"> Karamel (+5k)</label>
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="6000" data-cal="30" class="coffee-top" onchange="calcCoffeePrice()"> Dolchin Kukuni (+6k)</label>
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="7000" data-cal="70" class="coffee-top" onchange="calcCoffeePrice()"> Muskul Ko'pigi (+7k)</label>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-cafeBorder flex justify-between items-center">
+                                <div>
+                                    <span class="text-stone-400 block text-[10px] uppercase">Hisoblangan Narx va Kaloriya</span>
+                                    <span id="customCoffeePrice" class="text-xl font-bold text-cafeGold">28 000 UZS</span>
+                                    <span id="customCoffeeCal" class="text-xs text-stone-400 block">140 kcal</span>
+                                </div>
+                                <button onclick="addCustomCoffeeToCart()" class="px-5 py-3 bg-cafeGold text-cafeDark font-extrabold rounded-xl hover:bg-cafeGoldDark transition text-xs">Savatga Qo'shish</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Custom Pizza Builder -->
+                    <div class="glass-cafe p-6 sm:p-8 rounded-3xl border border-cafeBorder space-y-6">
+                        <h3 class="font-playfair font-bold text-xl text-white flex items-center gap-2">
+                            <i class="fa-solid fa-pizza-slice text-cafeGold"></i> Pitsa Konstruktori
+                        </h3>
+                        <div class="space-y-4 text-xs">
+                            <div>
+                                <label class="block font-bold text-stone-400 mb-1">Xamir va Hajm:</label>
+                                <select id="pizzaSize" onchange="calcPizzaPrice()" class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-3 text-white focus:border-cafeGold focus:outline-none">
+                                    <option value="55000">Yupqa Italiya Xamiri 30cm (+55 000 UZS)</option>
+                                    <option value="85000" selected>Katta Yumshoq Xamir 35cm (+85 000 UZS)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-bold text-stone-400 mb-1">Qo'shimcha Toppinglar:</label>
+                                <div class="grid grid-cols-2 gap-2 pt-1">
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="12000" class="pizza-top" onchange="calcPizzaPrice()"> Mozzarella (+12k)</label>
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="15000" class="pizza-top" onchange="calcPizzaPrice()"> Peperoni (+15k)</label>
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="10000" class="pizza-top" onchange="calcPizzaPrice()"> Zaytun (+10k)</label>
+                                    <label class="flex items-center gap-2 bg-cafeDark p-2.5 rounded-xl border border-cafeBorder"><input type="checkbox" value="14000" class="pizza-top" onchange="calcPizzaPrice()"> Dudlangan Go'sht (+14k)</label>
+                                </div>
+                            </div>
+                            <div class="pt-4 border-t border-cafeBorder flex justify-between items-center">
+                                <div>
+                                    <span class="text-stone-400 block text-[10px] uppercase">Hisoblangan Narx</span>
+                                    <span id="customPizzaPrice" class="text-xl font-bold text-cafeGold">85 000 UZS</span>
+                                </div>
+                                <button onclick="addCustomPizzaToCart()" class="px-5 py-3 bg-cafeGold text-cafeDark font-extrabold rounded-xl hover:bg-cafeGoldDark transition text-xs">Savatga Qo'shish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Uzbekistan Interactive Map Section -->
+            <div class="space-y-8">
+                <div class="text-center max-w-3xl mx-auto space-y-4">
+                    <span class="text-xs font-bold text-cafeGold uppercase tracking-widest"><i class="fa-solid fa-truck-fast mr-1"></i> Respublika Bo'ylab Delivery</span>
+                    <h2 class="title-line text-3xl sm:text-5xl font-playfair font-bold text-white">O'zbekiston Interaktiv Xaritasi</h2>
+                    <p class="text-stone-400 text-xs sm:text-sm">O'zingiz yashaydigan viloyatni tanlang, yetkazib berish narxi va vaqti avto-hisoblanadi.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                    <!-- Regions Buttons Grid -->
+                    <div class="lg:col-span-5 glass-cafe p-6 rounded-3xl border border-cafeBorder space-y-2 max-h-[420px] overflow-y-auto">
+                        <h4 class="font-playfair font-bold text-base text-white mb-3">Viloyatni Tanlang:</h4>
+                        <div id="regionsList" class="space-y-2"></div>
+                    </div>
+
+                    <!-- Region Details View -->
+                    <div class="lg:col-span-7 glass-cafe p-8 rounded-3xl border border-cafeBorder space-y-6 text-center lg:text-left relative overflow-hidden">
+                        <div class="inline-block p-4 rounded-2xl bg-cafeGold/10 border border-cafeGold/30 text-cafeGold text-3xl">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+                        <div>
+                            <h3 id="regionTitle" class="text-2xl font-playfair font-bold text-white">Toshkent Shahri va Viloyati</h3>
+                            <p id="regionDesc" class="text-stone-400 text-xs mt-2 leading-relaxed">Toshkent shahri markaziy filiali orqali ekspress yetkazib berish. Issiq va yangi holatda topshiriladi.</p>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 pt-4 border-t border-cafeBorder">
+                            <div class="bg-cafeDark p-3.5 rounded-2xl border border-cafeBorder text-center">
+                                <span class="text-[9px] text-stone-400 uppercase tracking-widest block">Yetkazish Vaqti</span>
+                                <span id="regionTime" class="text-sm font-bold text-cafeGold">25 - 35 Minut</span>
+                            </div>
+                            <div class="bg-cafeDark p-3.5 rounded-2xl border border-cafeBorder text-center">
+                                <span class="text-[9px] text-stone-400 uppercase tracking-widest block">Xizmat Narxi</span>
+                                <span id="regionPrice" class="text-sm font-bold text-white">15 000 UZS</span>
+                            </div>
+                            <div class="bg-cafeDark p-3.5 rounded-2xl border border-cafeBorder text-center">
+                                <span class="text-[9px] text-stone-400 uppercase tracking-widest block">Kuryer Statusi</span>
+                                <span class="text-sm font-bold text-emerald-400">Faol <i class="fa-solid fa-circle-check text-xs"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Order Tracker Simulation -->
+            <div class="glass-cafe p-8 rounded-3xl border border-cafeBorder space-y-6">
+                <div class="flex justify-between items-center border-b border-cafeBorder pb-4">
+                    <h3 class="font-playfair font-bold text-xl text-white flex items-center gap-2">
+                        <i class="fa-solid fa-satellite-dish text-cafeGold"></i> Jonli Buyurtma Tracker
+                    </h3>
+                    <span class="px-3 py-1 bg-cafeGold/20 text-cafeGold rounded-full text-xs font-bold">Buyurtma #9842</span>
+                </div>
+
+                <div id="trackerSteps" class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MEGA FOOTER -->
+    <footer class="bg-cafeDark border-t border-cafeBorder py-16 mt-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div class="space-y-4">
+                    <a href="#" class="font-playfair font-bold text-2xl text-white block">GOURMET <span class="text-cafeGold">LUXE</span></a>
+                    <p class="text-stone-400 text-xs leading-relaxed">Eng sara kofe donalari, Yevropa taomlari hamda oliy darajadagi xizmat ko'rsatish simvolidir.</p>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <h5 class="font-bold text-white uppercase tracking-wider">Ish Vaqtlari</h5>
+                    <p class="text-stone-400">Dushanba - Juma: 08:00 - 23:00</p>
+                    <p class="text-stone-400">Shanba - Yakshanba: 09:00 - 00:00</p>
+                </div>
+                <div class="space-y-3 text-xs">
+                    <h5 class="font-bold text-white uppercase tracking-wider">Aloqa va Manzil</h5>
+                    <p class="text-stone-400"><i class="fa-solid fa-location-dot text-cafeGold mr-1"></i> Toshkent sh., Amir Temur shoh ko'chasi, 42</p>
+                    <p class="text-stone-400"><i class="fa-solid fa-phone text-cafeGold mr-1"></i> +998 (71) 200-00-00</p>
+                </div>
+                <div class="space-y-3">
+                    <h5 class="font-bold text-white text-xs uppercase tracking-wider">Yangiliklarga Obuna</h5>
+                    <form onsubmit="handleSubscribe(event)" class="flex gap-2">
+                        <input type="email" required placeholder="Emailingiz..." class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-cafeGold">
+                        <button type="submit" class="px-4 py-2.5 bg-cafeGold text-cafeDark font-bold rounded-xl text-xs">OK</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-cafeBorder/40 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-stone-500">
+                <p>© 2026 Gourmet Luxe Bistro. Barcha huquqlar himoyalangan.</p>
+                <div class="flex gap-4">
+                    <a href="#" class="hover:text-cafeGold transition"><i class="fa-brands fa-instagram text-lg"></i></a>
+                    <a href="#" class="hover:text-cafeGold transition"><i class="fa-brands fa-telegram text-lg"></i></a>
+                    <a href="#" class="hover:text-cafeGold transition"><i class="fa-brands fa-facebook text-lg"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SAVAT DRAWER -->
+    <div id="cartDrawer" class="fixed inset-y-0 right-0 max-w-md w-full bg-cafeDark border-l border-cafeBorder p-6 shadow-2xl z-50 transform translate-x-full transition duration-300 flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center border-b border-cafeBorder pb-4">
+                <h3 class="font-playfair font-bold text-xl text-white">Savat</h3>
+                <button onclick="toggleCartDrawer()" class="text-stone-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Promokod -->
+            <div class="pt-4 flex gap-2">
+                <input type="text" id="promoInput" placeholder="CAFE20" class="w-full bg-cafeCard border border-cafeBorder rounded-xl p-2.5 text-xs text-white focus:outline-none uppercase font-bold">
+                <button onclick="applyPromo()" class="px-4 py-2.5 bg-cafeGold text-cafeDark font-bold rounded-xl text-xs whitespace-nowrap">Qo'llash</button>
+            </div>
+
+            <div id="cartItemsList" class="py-4 space-y-3 max-h-[50vh] overflow-y-auto"></div>
+        </div>
+
+        <div class="border-t border-cafeBorder pt-4 space-y-3">
+            <div class="flex justify-between text-xs text-stone-400">
+                <span>Yetkazib berish:</span>
+                <span id="cartDeliveryPrice">15 000 UZS</span>
+            </div>
+            <div class="flex justify-between text-xs text-stone-400">
+                <span>Chegirma:</span>
+                <span id="cartDiscountPrice" class="text-emerald-400">0 UZS</span>
+            </div>
+            <div class="flex justify-between font-bold text-base border-t border-cafeBorder/40 pt-2">
+                <span>Jami To'lov:</span>
+                <span id="cartTotalPrice" class="text-cafeGold">0 UZS</span>
+            </div>
+            <button onclick="checkoutCart()" class="w-full py-4 bg-cafeGold text-cafeDark font-extrabold text-xs uppercase tracking-wider rounded-xl hover:bg-cafeGoldDark transition shadow-xl shadow-cafeGold/20">
+                Buyurtmani Rasmiylashtirish
+            </button>
+        </div>
+    </div>
+
+    <!-- DISH DETAIL MODAL -->
+    <div id="dishModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-cafe max-w-lg w-full rounded-3xl border border-cafeBorder p-6 space-y-4 relative animate-fade-in">
+            <button onclick="closeDishModal()" class="absolute top-4 right-4 text-stone-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            <img id="modalImg" class="w-full h-56 object-cover rounded-2xl">
+            <h3 id="modalTitle" class="font-playfair font-bold text-2xl text-white"></h3>
+            <p id="modalDesc" class="text-xs text-stone-300 leading-relaxed"></p>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <div class="bg-cafeDark p-3 rounded-xl border border-cafeBorder text-center">
+                    <span class="text-[10px] text-stone-400 uppercase block">Kaloriya</span>
+                    <span id="modalCal" class="text-sm font-bold text-cafeGold"></span>
+                </div>
+                <div class="bg-cafeDark p-3 rounded-xl border border-cafeBorder text-center">
+                    <span class="text-[10px] text-stone-400 uppercase block">Tayyorlanish Vaqti</span>
+                    <span id="modalTime" class="text-sm font-bold text-white"></span>
+                </div>
+            </div>
+            <button id="modalAddBtn" class="w-full py-3.5 bg-cafeGold text-cafeDark font-bold rounded-xl text-xs uppercase tracking-wider">Savatga Qo'shish</button>
+        </div>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div id="videoModal" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4">
+        <div class="max-w-3xl w-full space-y-4 relative">
+            <button onclick="closeVideoModal()" class="text-white text-2xl absolute -top-10 right-0"><i class="fa-solid fa-xmark"></i></button>
+            <div class="aspect-video bg-cafeDark rounded-2xl border border-cafeBorder flex items-center justify-center text-stone-400 text-sm">
+                <p><i class="fa-solid fa-circle-play text-4xl text-cafeGold block mb-2 text-center"></i> Gourmet Luxe Atmosferasi va Barista San'ati Video Namoyishi</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yuqoriga qaytish tugmasi -->
+    <button id="topBtn" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })" class="fixed bottom-6 left-6 z-40 w-12 h-12 rounded-full bg-cafeGold text-cafeDark shadow-xl opacity-0 pointer-events-none transition duration-300" aria-label="Yuqoriga">
+        <i class="fa-solid fa-arrow-up"></i>
+    </button>
+
+    <!-- Asosiy JavaScript kodi alohida faylda -->
+    <script src="./script.js"></script>
+</body>
+</html>
