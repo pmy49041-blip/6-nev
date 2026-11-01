@@ -471,6 +471,9 @@
                         <button onclick="selectHall('music')" id="hall-music" class="p-3 bg-cafeCard text-stone-300 font-bold text-xs rounded-xl border border-cafeBorder hover:border-cafeGold transition">Live Music</button>
                     </div>
 
+                    <!-- Bo'sh stollar hisoblagichi -->
+                    <p id="freeCounter" class="text-xs font-bold text-cafeGold"></p>
+
                     <!-- Tables Map Grid -->
                     <div id="tablesGrid" class="grid grid-cols-3 sm:grid-cols-4 gap-4 p-6 bg-cafeDark/90 rounded-2xl border border-cafeBorder min-h-[300px] items-center justify-center"></div>
                     <p class="text-center text-[11px] text-stone-500">Stol rasmini bosing: katta rasm ochiladi.</p>
@@ -805,7 +808,10 @@
                 </div>
             </div>
 
-            <h3 id="tableModalTitle" class="font-playfair font-bold text-2xl text-white"></h3>
+            <div>
+                <h3 id="tableModalTitle" class="font-playfair font-bold text-2xl text-white"></h3>
+                <p id="tableModalInfo" class="text-xs text-stone-400 mt-1"></p>
+            </div>
 
             <div class="flex flex-wrap gap-3">
                 <button id="tableModalSelectBtn" class="flex-1 py-3.5 bg-cafeGold text-cafeDark font-bold rounded-xl text-xs uppercase tracking-wider">Stolni Tanlash</button>
@@ -832,7 +838,49 @@
         <i class="fa-solid fa-arrow-up"></i>
     </button>
 
+    <!-- ===== YORDAMCHI (tez savollarga javob beradi) ===== -->
+    <!-- Ochish tugmasi -->
+    <button id="aiButton" type="button" aria-label="Yordamchini ochish"
+        class="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-cafeGold text-cafeDark text-2xl shadow-2xl shadow-cafeGold/40 hover:scale-110 transition duration-300 flex items-center justify-center">
+        <i class="fa-solid fa-comment-dots"></i>
+    </button>
+
+    <!-- Chat oynasi -->
+    <div id="aiPanel" class="hidden fixed bottom-24 right-6 z-40 w-[calc(100vw-3rem)] sm:w-96 h-[32rem] max-h-[70vh] glass-cafe rounded-3xl border border-cafeGold/30 shadow-2xl flex flex-col overflow-hidden animate-fade-in">
+
+        <!-- Sarlavha -->
+        <div class="flex items-center justify-between gap-3 p-4 border-b border-cafeBorder">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-cafeGold text-cafeDark flex items-center justify-center font-playfair font-bold text-lg">G</div>
+                <div>
+                    <p class="font-playfair font-bold text-white leading-tight">Gourmet yordamchi</p>
+                    <p class="text-[11px] text-emerald-400 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Tez savollarga javob beradi
+                    </p>
+                </div>
+            </div>
+            <button id="aiClose" type="button" aria-label="Yopish" class="text-stone-400 hover:text-white text-lg"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+
+        <!-- Xabarlar shu yerda chiqadi -->
+        <div id="aiMessages" class="flex-1 overflow-y-auto p-4 space-y-3 text-xs"></div>
+
+        <!-- Tezkor savol tugmalari -->
+        <div id="aiChips" class="px-4 pb-3 flex gap-2 overflow-x-auto"></div>
+
+        <!-- Savol yozish -->
+        <form id="aiForm" class="p-3 border-t border-cafeBorder flex gap-2">
+            <input id="aiInput" type="text" autocomplete="off" placeholder="Savolingizni yozing..."
+                class="flex-1 bg-cafeCard border border-cafeBorder rounded-xl py-2.5 px-3 text-xs text-white focus:outline-none focus:border-cafeGold transition">
+            <button type="submit" aria-label="Yuborish" class="w-11 bg-cafeGold hover:bg-cafeGoldDark text-cafeDark rounded-xl transition">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </form>
+    </div>
+
     <!-- Asosiy JavaScript kodi alohida faylda -->
     <script src="./script.js"></script>
+    <!-- Yordamchi kodi (script.js dan KEYIN ulanishi shart) -->
+    <script src="./ai.js"></script>
 </body>
 </html>

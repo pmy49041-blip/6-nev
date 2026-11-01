@@ -205,7 +205,18 @@ const tablePhotos = [
 // Zal nomlari (oynada chiroyli chiqishi uchun)
 const hallNames = { main: 'Asosiy Zal', terrace: 'Yozgi Terrasa', vip: 'VIP Xona', music: 'Live Music' };
 
+// Har bir stol necha kishilik (1-stol = 2 kishilik, 2-stol = 4 kishilik, ...)
+const tableSeats = [2, 4, 4, 6, 2, 4, 8, 4, 6, 2, 4, 10];
+
+// Band stollar raqami (har bir zal uchun alohida). Bron qilinsa, shu yerga qo'shiladi.
+const bandStollar = { main: [3, 7], terrace: [3, 7], vip: [3, 7], music: [3, 7] };
+
+let currentHall = 'main';   // hozir ochiq zal
+let selectedHall = null;    // tanlangan stolning zali
+let selectedNum = null;     // tanlangan stolning raqami
+
 function selectHall(hall) {
+    currentHall = hall;
     document.querySelectorAll('[id^="hall-"]').forEach(btn => {
         btn.classList.remove('bg-cafeGold', 'text-cafeDark', 'border-cafeGold');
         btn.classList.add('bg-cafeCard', 'text-stone-300', 'border-cafeBorder');
@@ -215,7 +226,7 @@ function selectHall(hall) {
     const container = document.getElementById('tablesGrid');
     let html = '';
     for(let i=1; i<=12; i++) {
-        const isOccupied = i === 3 || i === 7;
+        const isOccupied = bandStollar[hall].includes(i);
         const photo = tablePhotos[(i - 1) % tablePhotos.length];
         // Dumaloq ichida rasm, ustida qora parda va stol nomi
         html += `
@@ -223,11 +234,18 @@ function selectHall(hall) {
                 class="table-btn relative overflow-hidden aspect-square flex items-center justify-center border-2 rounded-full font-bold text-xs transition duration-300 ${isOccupied ? 'table-occupied' : 'bg-cafeCard border-cafeBorder text-white hover:border-cafeGold'}">
                 <img src="${photo}?auto=format&fit=crop&w=300&q=80" class="absolute inset-0 w-full h-full object-cover ${isOccupied ? 'grayscale opacity-40' : ''}">
                 <span class="absolute inset-0 bg-black/45"></span>
-                <span class="relative ${isOccupied ? 'text-stone-400' : 'text-white'}">${hall.toUpperCase()} #${i}</span>
+                <span class="relative text-center leading-tight ${isOccupied ? 'text-stone-400' : 'text-white'}">
+                    <span class="block">${hall.toUpperCase()} #${i}</span>
+                    <span class="block text-[10px] ${isOccupied ? 'text-stone-500' : 'text-cafeGold'}">${isOccupied ? 'Band' : tableSeats[i - 1] + ' kishilik'}</span>
+                </span>
             </button>
         `;
     }
     container.innerHTML = html;
+
+    // Bo'sh stollar hisoblagichi
+    const bandSoni = bandStollar[hall].length;
+    document.getElementById('freeCounter').innerText = `Bo'sh stollar: ${12 - bandSoni} / 12`;
 }
 
 // Stol rasmi oynasini ochish
@@ -237,8 +255,11 @@ function openTableModal(hall, i) {
 
     document.getElementById('tableModalImg').src = photo + '?auto=format&fit=crop&w=1000&q=80';
     document.getElementById('tableModalTitle').innerText = `${hallNames[hall]}: ${i}-stol`;
+    document.getElementById('tableModalInfo').innerText = `${tableSeats[i - 1]} kishilik stol. Hozir bo'sh.`;
     // "Stolni Tanlash" bosilsa, eski selectTable funksiyasi ishlaydi
     document.getElementById('tableModalSelectBtn').onclick = () => {
+        selectedHall = hall;
+        selectedNum = i;
         selectTable(tableId, document.getElementById('table-' + i));
         closeTableModal();
     };
@@ -264,6 +285,15 @@ function handleReservationSubmit(e) {
     e.preventDefault();
     if(!selectedTable) { showToast('Avval sxemadan stolni tanlang.'); return; }
     showToast(`${selectedTable} band qilindi. Tasdiqlash uchun qo'ng'iroq qilamiz.`);
+
+    // Bron qilingan stol band bo'lib qoladi, forma tozalanadi
+    bandStollar[selectedHall].push(selectedNum);
+    selectedTable = null;
+    selectedHall = null;
+    selectedNum = null;
+    e.target.reset();
+    document.getElementById('selectedTableDisplay').value = 'Stol tanlanmagan';
+    selectHall(currentHall);
 }
 
 // Custom Builders Logic
